@@ -29,6 +29,7 @@ int RSA_Sign_Verify::signString(const char * cookieData, char * hexSig)
    BIO *mem = BIO_new(BIO_s_mem());
 
 //Paste the output from openssl genrsa nnnn here, verbatim.
+//openssl genrsa -out key.pem 4096
 //Remember to add \n at the end of each line.
    BIO_puts(mem, "-----BEGIN RSA PRIVATE KEY-----\n"
 ***REMOVED***
@@ -110,6 +111,7 @@ int RSA_Sign_Verify::verifySig(const char * cookieData, const char * hexSig)
    BIO *mem = BIO_new(BIO_s_mem());
 
 //Paste the output from openssl genrsa nnnn here, verbatim.
+//openssl req -new -x509 -key key.pem -out cert.pem -days 3650
 //Remember to add \n at the end of each line.
    BIO_puts(mem, "-----BEGIN CERTIFICATE-----\n"
 ***REMOVED***
