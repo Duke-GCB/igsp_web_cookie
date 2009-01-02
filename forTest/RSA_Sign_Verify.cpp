@@ -57,30 +57,6 @@ int RSA_Sign_Verify::signString(const char * cookieData, char * hexSig)
 ***REMOVED***
 ***REMOVED***
 ***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
 "-----END RSA PRIVATE KEY-----");
 
    /* Read private key */
@@ -138,18 +114,6 @@ int RSA_Sign_Verify::verifySig(const char * cookieData, const char * hexSig)
 //openssl req -new -x509 -key key.pem -out cert.pem -days 3650
 //Remember to add \n at the end of each line.
    BIO_puts(mem, "-----BEGIN CERTIFICATE-----\n"
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
 ***REMOVED***
 ***REMOVED***
 ***REMOVED***
