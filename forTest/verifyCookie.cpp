@@ -117,8 +117,16 @@ int main(int argc, char * argv[])
    }
    
    close(s);
-   
+
    //now, buffer has the response from the daemon
+   //if it is zero, then the cookie has expired
+   if (strcmp (buffer, "0") == 0)
+   {
+      fprintf(stderr, "cookie is expired\n");
+      return USER_EXIT;
+   }
+ 
+   //if we are here, the cookie is valid, so report the short lifetime
    printf("%s", buffer);
    return NORMAL_EXIT;
 }
