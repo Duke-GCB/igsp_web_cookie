@@ -25,7 +25,12 @@ start() {
                 exit 2;
         else
                 cd $COOKIEDAEMON_DIR
-                daemon --user=apache "$COOKIEDAEMON_DIR/cookieDaemon &"
+                if [ ! -e "$COOKIEDAEMON_DIR/cookieDaemon" ]; then
+                   echo cookieDaemon not found
+                   exit 2;
+                fi
+                DAEMON_USER=`ls -l "$COOKIEDAEMON_DIR/cookieDaemon" | awk '{print $3;}'`
+                daemon --user=$DAEMON_USER "$COOKIEDAEMON_DIR/cookieDaemon &"
                 RETVAL=$?
                 echo
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/cookieDaemon
