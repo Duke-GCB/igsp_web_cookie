@@ -2,7 +2,7 @@
 #define IGSPNET_COOKIE_CONFIG
 
 /* path to Unix domain socket */
-#define SOCKET_PATH "/var/www/bin/cookieDaemon.sock"
+#define SOCKET_PATH "/home/rblick/igsp_web_cookie/current/forDev/cookieDaemon.sock"
 /* Oracle connect string */
 #define DB_CONN_STRING "***REMOVED***"
 /* Oracle database user to connect with */

@@ -66,7 +66,7 @@ int RSA_Sign_Verify::signString(const char * cookieData, char * hexSig)
 
    if (pkey == NULL)
    { 
-      fprintf(stderr, "Error reading private key.");
+      fprintf(stderr, "Error reading private key.\n");
       return -1;
    }
 
@@ -78,7 +78,7 @@ int RSA_Sign_Verify::signString(const char * cookieData, char * hexSig)
 
    if (err != 1)
    {
-      fprintf(stderr, "Error signing cookie.");
+      fprintf(stderr, "Error signing cookie.\n");
       return -1;
    }
    
@@ -145,7 +145,7 @@ int RSA_Sign_Verify::verifySig(const char * cookieData, const char * hexSig)
 
    if (x509 == NULL)
    {
-      fprintf(stderr, "Error reading public key cert.");
+      fprintf(stderr, "Error reading public key cert.\n");
       return -1;
    }
   
@@ -153,7 +153,7 @@ int RSA_Sign_Verify::verifySig(const char * cookieData, const char * hexSig)
    pkey=X509_get_pubkey(x509);
    if (pkey == NULL)
    {
-      fprintf(stderr, "Error getting public key.");
+      fprintf(stderr, "Error getting public key.\n");
       return -1;
    }
    
@@ -168,7 +168,7 @@ int RSA_Sign_Verify::verifySig(const char * cookieData, const char * hexSig)
 
    if (err != 1)
    {
-      fprintf(stderr, "Signature verification failed.");
+      fprintf(stderr, "Signature verification failed.\n");
       return -1;
    }
 
