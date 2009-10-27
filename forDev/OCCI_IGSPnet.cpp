@@ -223,6 +223,7 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
    }
    catch (SQLException &e)
    {
+      /* Plausible exceptions = ORA-01034, 12541, 03113 */
       if (throwExceptions)
       {
          throw;
