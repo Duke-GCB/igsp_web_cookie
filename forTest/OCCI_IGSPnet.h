@@ -2,7 +2,6 @@
 #define OCCI_IGSPNET_H
 
 #include <occi.h>
-#include <iostream>
 #include <string>
 #include "IGSPnet_Cookie_Config.h"
 
@@ -48,6 +47,9 @@ class OCCI_IGSPnet
       Connection * conn;
       Statement * stmtCheckCookie;
       Statement * stmtInsertCookie;
+      Statement * stmtPing;
+      void cleanupConnection();
+      int getConnection(bool throwExceptions = false);
 };
 
 #endif

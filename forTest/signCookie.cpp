@@ -36,17 +36,30 @@ int main(int argc, char * argv[])
    if ((softLifetime <= 0) || (hardLifetime <= 0) || (hardLifetime < softLifetime))
       printUsage(argv[0]);
    
-   OCCI_IGSPnet odb;
+   OCCI_IGSPnet *odb = NULL;
    char dukey[2];
    char cookieVersion[2];
    char clientID[5];
    
-   if (odb.insertCookie(userID, IP, hardLifetime, softLifetime, dukey, cookieVersion, clientID) != 0)
+   try
+   {
+      odb = new OCCI_IGSPnet();  //die if can't connect
+   }
+   catch (SQLException &e)
+   {
+      fprintf(stderr, "OCCI_IGSPnet(): Can't connect to database - %s\n", e.what());
+      exit(FATAL_EXIT);
+   }
+   
+   if (odb->insertCookie(userID, IP, hardLifetime, softLifetime, dukey, cookieVersion, clientID) != 0)
    {
       //user not enabled or lifetime invalid
       fprintf(stderr, "insertCookie(): cannot insert cookie\n");
+      delete odb;  //free the memory
       exit(USER_EXIT);
    }
+   
+   delete odb;  //done with db connection
    
    char cookieText[IGSPnet_Cookie_Streamer::IGSPNET_COOKIE_SIZE];
    char signatureText[IGSPnet_Cookie_Streamer::RSA_HEX_SIG_SIZE];

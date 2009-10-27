@@ -17,6 +17,7 @@
 /* listener socket must be close-able by signal handler,
  * so must be global */
 int l; //listener socket handle
+OCCI_IGSPnet *db = NULL;  //db handler must be freed on exit
 
 /*
  * Function Name: cleanup
@@ -34,6 +35,12 @@ void cleanup(int signum)
    close(l);
    unlink(SOCKET_PATH);
 
+   if (db != NULL)
+   {
+      delete db;
+      db = NULL;
+   }
+   
    //if we got here, assume normal termination
    exit (NORMAL_EXIT);
 }
@@ -91,9 +98,18 @@ int main(void)
    
    fprintf(stderr, "Listening on socket (bound to %s)\n", SOCKET_PATH); 
 
-   /* enable us to talk to verify signatures and talk w/ Oracle */
-   OCCI_IGSPnet db;
    char responseBuffer[RSA_Sign_Verify::SOCKET_RW_BUFFER_SIZE];
+   
+   /* enable us to talk to verify signatures and talk w/ Oracle */
+   try
+   {
+      db = new OCCI_IGSPnet();  //die if can't connect
+   }
+   catch (SQLException &e)
+   {
+      fprintf(stderr, "OCCI_IGSPnet(): Can't connect to database - %s\n", e.what());
+      return FATAL_EXIT;
+   }
 
    while (1)
    {
@@ -147,7 +163,7 @@ int main(void)
          int shortLifetime;
          if (!failure)
          {
-            shortLifetime = db.checkCookie(userID, IP, clientID, cookieVersion);
+            shortLifetime = db->checkCookie(userID, IP, clientID, cookieVersion);
             //fprintf(stderr, "responseBuffer = %d\n", shortLifetime);
             sprintf(responseBuffer, "%d", shortLifetime);
          }
@@ -171,5 +187,6 @@ int main(void)
    * actually occurs from cleanup(), which returns 0, but main() should
    * return something, so return 0.
    */
-  return NORMAL_EXIT;
+   cleanup(0);  //0 is used as dummy sig handler
+   return NORMAL_EXIT;
 }

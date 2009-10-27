@@ -11,16 +11,13 @@
  * Returns    : none
  */
 OCCI_IGSPnet::OCCI_IGSPnet()
+: env(NULL), conn(NULL), stmtCheckCookie(NULL), stmtInsertCookie(NULL), stmtPing(NULL)
 {
    // creates default OCCI environment (http://download.oracle.com/docs/cd/B12037_01/appdev.101/b10778/toc.htm)
    env = Environment::createEnvironment(Environment::DEFAULT);
-   
-   // connects to DB
-   conn = env->createConnection(DB_USER, DB_PASS, DB_CONN_STRING);
-   
-   //prepare the statements
-   stmtCheckCookie = conn->createStatement("BEGIN IGSPNET2.CHECK_COOKIE(:1, :2, :3, :4, :5); END;");
-   stmtInsertCookie = conn->createStatement("BEGIN IGSPNET2.INSERT_COOKIE(:1, :2, :3, :4, :5, :6, :7); END;");
+
+   //set up the connection; fatally die if cannot
+   getConnection(true);
 }
 
 /*
@@ -36,16 +33,8 @@ OCCI_IGSPnet::OCCI_IGSPnet()
  */
 OCCI_IGSPnet::~OCCI_IGSPnet()
 {
-   // free resources tied up by prepared statements
-   if ((conn != NULL) && (stmtCheckCookie != NULL))
-      conn->terminateStatement(stmtCheckCookie);
-   if ((conn != NULL) && (stmtInsertCookie != NULL))
-      conn->terminateStatement(stmtInsertCookie);
-   
-   // kill the connection
-   if ((env != NULL) && (conn != NULL))
-      env->terminateConnection(conn);
-      
+   cleanupConnection();
+         
    // free memory allocated by OCCI environment
    if (env != NULL)
       Environment::terminateEnvironment(env);
@@ -71,6 +60,9 @@ OCCI_IGSPnet::~OCCI_IGSPnet()
 int OCCI_IGSPnet::checkCookie(const char * userID, const char * IP, const char * clientID, const char * cookieVersion)
 {
    int shortLifetime;
+   
+   if (!getConnection())
+      return 0;  //cannot establish connection
    
    stmtCheckCookie->setString(1, userID);
    stmtCheckCookie->setString(2, IP);
@@ -111,6 +103,10 @@ int OCCI_IGSPnet::insertCookie(const char * userID, const char * IP, const int h
    std::string dbDukey;
    std::string dbCookieVersion;
    std::string dbClientID;
+   
+   if (!getConnection())
+      return -1;  //cannot establish connection
+
 
    stmtInsertCookie->setString(1, userID);
    stmtInsertCookie->setString(2, IP);
@@ -128,5 +124,113 @@ int OCCI_IGSPnet::insertCookie(const char * userID, const char * IP, const int h
    if (strlen(dukey) > 0)
       return 0;
    else
-      return -1;
+      return -1;  //cannot insert cookie
 }
+
+void OCCI_IGSPnet::cleanupConnection()
+{
+   // free resources tied up by prepared statements
+   try
+   {
+      if ((conn != NULL) && (stmtCheckCookie != NULL))
+         conn->terminateStatement(stmtCheckCookie);
+   }
+   catch (...)
+   {
+   }
+   
+   try
+   {
+      if ((conn != NULL) && (stmtInsertCookie != NULL))
+         conn->terminateStatement(stmtInsertCookie);
+   }
+   catch (...)
+   {
+   }
+
+   try
+   {
+      if ((conn != NULL) && (stmtPing != NULL))
+         conn->terminateStatement(stmtPing);
+   }
+   catch (...)
+   {
+   }
+
+   // kill the connection
+   try
+   {
+      if ((env != NULL) && (conn != NULL))
+         env->terminateConnection(conn);
+   }
+   catch (...)
+   {
+   }
+
+   stmtCheckCookie = NULL;
+   stmtInsertCookie = NULL;
+   stmtPing = NULL;
+   conn = NULL;
+
+   return;
+}
+
+int OCCI_IGSPnet::getConnection(bool throwExceptions)
+{
+   ResultSet *rs;
+
+   try
+   {
+      if ((conn != NULL) && (stmtPing != NULL))
+      {
+         rs = stmtPing->executeQuery();
+
+         if (rs->next())
+         {
+            rs->cancel();  //discard the resultset
+            return 1;  //the connection is good
+         }
+      }
+   }
+   catch (...)
+   {
+   }
+   
+   //if we're here, we don't have a valid connection to the db, so
+   //let's try to set one up
+   
+   cleanupConnection();
+   
+   try
+   {
+      // connects to DB
+      conn = env->createConnection(DB_USER, DB_PASS, DB_CONN_STRING);
+   
+      //prepare the statements
+      stmtCheckCookie = conn->createStatement("BEGIN IGSPNET2.CHECK_COOKIE(:1, :2, :3, :4, :5); END;");
+      stmtInsertCookie = conn->createStatement("BEGIN IGSPNET2.INSERT_COOKIE(:1, :2, :3, :4, :5, :6, :7); END;");
+      stmtPing = conn->createStatement("SELECT 1 FROM dual");
+      
+      rs = stmtPing->executeQuery();
+      if (rs->next())
+      {
+         rs->cancel();  //discard the resultset
+         return 1;
+      }
+      
+      //we should not be able to get here, but for completeness, return 0
+      return 0;
+   }
+   catch (SQLException &e)
+   {
+      if (throwExceptions)
+      {
+         throw;
+      }
+      else
+      {
+         return 0;  //we could not establish a connection
+      }
+   }
+}
+

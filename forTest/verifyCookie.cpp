@@ -83,7 +83,7 @@ int main(int argc, char * argv[])
    
    if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
    {
-      fprintf(stderr, "socket(): could not open socket");
+      fprintf(stderr, "socket(): could not open socket\n");
       exit(FATAL_EXIT);
    }
 
@@ -92,7 +92,7 @@ int main(int argc, char * argv[])
 
    if (connect(s, (struct sockaddr *) &sa, sizeof (sa)) < 0)
    {
-      fprintf(stderr, "connect(): could not connect to socket %s", SOCKET_PATH);
+      fprintf(stderr, "connect(): could not connect to socket %s\n", SOCKET_PATH);
       exit(FATAL_EXIT);
    }
 
