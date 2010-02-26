@@ -1,0 +1,5 @@
+When building, the following files may differ among dev, test, prod:
+IGSPnet_Cookie_Config.h = SOCKET_PATH, DB_CONN_STRING, DB_USER, DB_PASS
+RSA_Sign_Verify.cpp = private and public keys
+Makefile = LIBSTDC will vary depending on 32 or 64 bit
+cookied = COOKIEDAEMON_DIR
