@@ -7,7 +7,7 @@ LIBSTDC := /usr/lib64/libstdc++.so.6
 all : cookieDaemon signCookie verifyCookie
 
 cookieDaemon : IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o cookieDaemon.cpp IGSPnet_Cookie_Config.h
-	g++ -O3 -I $(ORACLE_HOME)/sdk/include -L $(ORACLE_HOME) $(LIBSTDC) -locci -lclntsh -lcrypto IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o cookieDaemon.cpp -o cookieDaemon
+	g++ -O3 -I $(ORACLE_HOME)/sdk/include -L $(ORACLE_HOME) $(LIBSTDC) -locci -lclntsh -lcrypto IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o cookieDaemon.cpp -o test_cookieDaemon
 
 signCookie : IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o signCookie.cpp
 	g++ -O3 -I $(ORACLE_HOME)/sdk/include -L $(ORACLE_HOME) $(LIBSTDC) -locci -lclntsh -lcrypto IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o signCookie.cpp -o signCookie
@@ -23,4 +23,4 @@ OCCI_IGSPnet.o : OCCI_IGSPnet.cpp OCCI_IGSPnet.h IGSPnet_Cookie_Config.h
 	g++ -c -O3 -I $(ORACLE_HOME)/sdk/include OCCI_IGSPnet.cpp
 
 clean :
-	-rm cookieDaemon signCookie verifyCookie *.o
+	-rm test_cookieDaemon signCookie verifyCookie *.o

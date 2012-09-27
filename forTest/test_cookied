@@ -2,12 +2,12 @@
 #
 #       /etc/rc.d/init.d/cookied
 # cookied  This shell script takes care of starting and stopping
-#               cookieDaemon (the IGSPnet cookie daemon)
+#               test_cookieDaemon (the IGSPnet cookie daemon)
 #
 # Author: Rob Wagner
 #
 # chkconfig: 35 20 80
-# description: cookieDaemon is the service that connects to IGSPnet \
+# description: test_cookieDaemon is the service that connects to IGSPnet \
 # and is used by verifyCookie to communicate with Oracle.
 #
 # known bug: hangs ssh on exit (https://bugzilla.mindrot.org/show_bug.cgi?id=52)
@@ -18,33 +18,33 @@
 COOKIEDAEMON_DIR=/var/system/test_cookied
 
 start() {
-        echo -n "Starting IGSPnet cookieDaemon: "
-        PID=`pgrep cookieDaemon`
+        echo -n "Starting IGSPnet test_cookieDaemon: "
+        PID=`pgrep test_cookieDaemon`
         if [[ ! -z $PID ]]; then
-                echo cookieDaemon already running: $PID
+                echo test_cookieDaemon already running: $PID
                 exit 2;
         else
                 cd $COOKIEDAEMON_DIR
-                if [ ! -e "$COOKIEDAEMON_DIR/cookieDaemon" ]; then
-                   echo cookieDaemon not found
+                if [ ! -e "$COOKIEDAEMON_DIR/test_cookieDaemon" ]; then
+                   echo test_cookieDaemon not found
                    exit 2;
                 fi
-                DAEMON_USER=`ls -l "$COOKIEDAEMON_DIR/cookieDaemon" | awk '{print $3;}'`
-                daemon --user=$DAEMON_USER "$COOKIEDAEMON_DIR/cookieDaemon &"
+                DAEMON_USER=`ls -l "$COOKIEDAEMON_DIR/test_cookieDaemon" | awk '{print $3;}'`
+                daemon --user=$DAEMON_USER "$COOKIEDAEMON_DIR/test_cookieDaemon &"
                 RETVAL=$?
                 echo
-                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/cookieDaemon
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/test_cookieDaemon
                 return $RETVAL
         fi
 
 }
 
 stop() {
-        echo -n "Shutting down IGSPnet cookieDaemon: "
+        echo -n "Shutting down IGSPnet test_cookieDaemon: "
         echo
-        killproc cookieDaemon
+        killproc test_cookieDaemon
         echo
-        rm -f /var/lock/subsys/cookieDaemon
+        rm -f /var/lock/subsys/test_cookieDaemon
         return 0
 }
 
