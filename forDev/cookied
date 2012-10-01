@@ -29,8 +29,7 @@ start() {
                    echo cookieDaemon not found
                    exit 2;
                 fi
-                DAEMON_USER=`ls -l "$COOKIEDAEMON_DIR/cookieDaemon" | awk '{print $3;}'`
-                daemon --user=$DAEMON_USER "$COOKIEDAEMON_DIR/cookieDaemon &"
+                daemon --user=webserv "$COOKIEDAEMON_DIR/cookieDaemon &"
                 RETVAL=$?
                 echo
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/cookieDaemon
