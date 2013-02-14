@@ -33,7 +33,7 @@ start() {
                 daemon --user=$DAEMON_USER "$COOKIEDAEMON_DIR/test_cookieDaemon &"
                 RETVAL=$?
                 echo
-                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/test_cookieDaemon
+                [ $RETVAL -eq 0 ] && chmod g+w ${COOKIEDAEMON_DIR}/cookieDaemon.sock && touch /var/lock/subsys/test_cookieDaemon
                 return $RETVAL
         fi
 
