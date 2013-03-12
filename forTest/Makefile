@@ -4,9 +4,9 @@
 #LIBSTDC := /usr/lib64/libstdc++.so.6
 #LIBSTDC := /usr/lib/libstdc++.so.5
 
-all : cookieDaemon signCookie verifyCookie
+all : test_cookieDaemon signCookie verifyCookie
 
-cookieDaemon : IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o cookieDaemon.cpp IGSPnet_Cookie_Config.h
+test_cookieDaemon : IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o cookieDaemon.cpp IGSPnet_Cookie_Config.h
 	g++ -O3 -I $(ORACLE_HOME)/sdk/include -L $(ORACLE_HOME) $(LIBSTDC) -locci -lclntsh -lcrypto IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o cookieDaemon.cpp -o test_cookieDaemon
 
 signCookie : IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o signCookie.cpp
