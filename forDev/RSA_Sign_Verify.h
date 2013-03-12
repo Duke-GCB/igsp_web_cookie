@@ -2,7 +2,7 @@
 #define RSA_SIGN_VERIFY_H
 
 #include <stdio.h>
-#include <string>
+#include <string.h>
 #include <openssl/rsa.h>
 #include <openssl/evp.h>
 #include <openssl/objects.h>
