@@ -2,7 +2,7 @@
 #define OCCI_IGSPNET_H
 
 #include <occi.h>
-#include <string>
+#include <string.h>
 #include "IGSPnet_Cookie_Config.h"
 
 using namespace oracle::occi;
