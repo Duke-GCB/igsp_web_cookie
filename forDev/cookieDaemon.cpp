@@ -56,8 +56,19 @@ void cleanup(int signum)
  *                   fatal error (-1) or signal (SIGHUG, SIGINT, SIGTERM) (0).
  *
  */
-int main(void)
+int main(int argc, char * argv[])
 {
+   if (argc == 2)
+   {
+     char firstArg[4];
+     strcpy(firstArg, argv[1]);
+     if (strcmp(firstArg, "-svn") == 0)
+     {
+       printf("%s\n",SVNPOS);
+       exit (NORMAL_EXIT);
+     }
+   }
+
    int w;   /* listener and worker sockets */
    struct sockaddr_un sa;   /* socket address */
    int count;  /* length of stream read by socket */

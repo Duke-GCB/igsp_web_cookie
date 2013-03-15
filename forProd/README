@@ -1,6 +1,9 @@
-The following files may differ among dev, test, prod:
-IGSPnet_Cookie_Config.h - SOCKET_PATH, DB_CONN_STRING, DB_USER, DB_PASS
-cookied - COOKIEDAEMON_DIR
-RSA_Sign_Verify.cpp - public and private keys
-Makefile - LIBSTDC depending on 32 or 64 bit
+When building, the following files may differ among dev, test, prod:
+IGSPnet_Cookie_Config.h = SOCKET_PATH, DB_CONN_STRING, DB_USER, DB_PASS
+RSA_Sign_Verify.cpp = private and public keys
+Makefile = LIBSTDC will vary depending on 32 or 64 bit
+cookied = COOKIEDAEMON_DIR
 
+All binaries now support the -svn argument, which will print the position in the svn tree of the software.
+Please update the SVNPOS constant in IGSPnet_Cookie_Config.h to correspond to this value, relative to
+the root of the svn tree (e.g. 'current', 'branches/foo', 'tags/foo', etc.)

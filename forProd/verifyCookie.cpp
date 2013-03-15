@@ -22,8 +22,19 @@ int main(int argc, char * argv[])
    char myIP[16];
    myIP[0] = '\0';
 
-   if ((argc != 2) && (argc != 3)) 
+   if ((argc != 2) && (argc != 3))
       printUsage(argv[0]);
+
+   if (strlen(argv[1]) == 4)
+   {
+     char firstArg[4];
+     strcpy(firstArg, argv[1]);
+     if (strcmp(firstArg, "-svn") == 0)
+     {
+       printf("%s\n",SVNPOS);
+       exit(NORMAL_EXIT);
+     }
+   }
 
    if (argc == 3)
    {

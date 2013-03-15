@@ -1,5 +1,6 @@
 #ifndef IGSPNET_COOKIE_CONFIG
 #define IGSPNET_COOKIE_CONFIG
+#define SVNPOS "branches/RB_1.0"
 
 /* path to Unix domain socket */
 #define SOCKET_PATH "/var/system/dev_cookied/cookieDaemon.sock"

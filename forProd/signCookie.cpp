@@ -18,8 +18,23 @@ void printUsage(char * programName)
 int main(int argc, char * argv[])
 {
    if (argc != 5)
-      printUsage(argv[0]);
-   
+   {
+     if (argc == 2)
+     {
+       char firstArg[4];
+       strcpy(firstArg, argv[1]);
+       if (strcmp(firstArg, "-svn") == 0)
+       {
+         printf("%s\n",SVNPOS);
+         exit (NORMAL_EXIT);
+       }
+     }
+     else
+     {
+       printUsage(argv[0]);
+     }
+   }
+
    char userID[13];
    char IP[16];
    int softLifetime;
