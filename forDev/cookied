@@ -15,7 +15,7 @@
 # Source function library.
 . /etc/init.d/functions
 
-COOKIEDAEMON_DIR=/var/system/cookied
+COOKIEDAEMON_DIR=/var/system/dev_cookied
 
 start() {
         echo -n "Starting IGSPnet cookieDaemon: "
