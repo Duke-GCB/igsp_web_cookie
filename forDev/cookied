@@ -15,7 +15,7 @@
 # Source function library.
 . /etc/init.d/functions
 
-COOKIEDAEMON_DIR=/var/system/dev_cookied
+COOKIEDAEMON_DIR=/var/system/cookied
 
 start() {
         echo -n "Starting IGSPnet cookieDaemon: "
@@ -29,7 +29,8 @@ start() {
                    echo cookieDaemon not found
                    exit 2;
                 fi
-                daemon --user=webserv "$COOKIEDAEMON_DIR/cookieDaemon &"
+                DAEMON_USER=`ls -l "$COOKIEDAEMON_DIR/cookieDaemon" | awk '{print $3;}'`
+                daemon --user=$DAEMON_USER "$COOKIEDAEMON_DIR/cookieDaemon &"
                 RETVAL=$?
                 echo
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/cookieDaemon
