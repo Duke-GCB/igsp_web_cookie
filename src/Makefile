@@ -1,5 +1,5 @@
 # needs occi library and headers under ORACLE_HOME
-# needs openssh-devel
+# needs openssl-devel
 #
 #LIBSTDC := /usr/lib64/libstdc++.so.6
 #LIBSTDC := /usr/lib/libstdc++.so.5
