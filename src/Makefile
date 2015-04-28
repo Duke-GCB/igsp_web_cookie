@@ -7,10 +7,10 @@
 all : cookieDaemon signCookie verifyCookie
 
 cookieDaemon : IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o cookieDaemon.cpp IGSPnet_Cookie_Config.h
-	g++ -O3 -I $(ORACLE_HOME)/sdk/include -L $(ORACLE_HOME) $(LIBSTDC) -locci -lclntsh -lcrypto IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o cookieDaemon.cpp -o cookieDaemon
+	g++ -O3 -I $(ORACLE_HOME)/sdk/include -L $(ORACLE_HOME) $(LIBSTDC) -locci -lclntsh -lcrypto -lnnz11 IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o cookieDaemon.cpp -o cookieDaemon
 
 signCookie : IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o signCookie.cpp
-	g++ -O3 -I $(ORACLE_HOME)/sdk/include -L $(ORACLE_HOME) $(LIBSTDC) -locci -lclntsh -lcrypto IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o signCookie.cpp -o signCookie
+	g++ -O3 -I $(ORACLE_HOME)/sdk/include -L $(ORACLE_HOME) $(LIBSTDC) -locci -lclntsh -lcrypto -lnnz11 IGSPnet_Cookie_Streamer.o OCCI_IGSPnet.o RSA_Sign_Verify.o signCookie.cpp -o signCookie
 
 verifyCookie : IGSPnet_Cookie_Streamer.o RSA_Sign_Verify.o verifyCookie.cpp IGSPnet_Cookie_Config.h
 	g++ -O3 -lcrypto IGSPnet_Cookie_Streamer.o RSA_Sign_Verify.o verifyCookie.cpp -o verifyCookie
