@@ -8,7 +8,11 @@ SRC=src
 BIN=bin
 OBJ=obj
 
-all : $(BIN)/cookieDaemon $(BIN)/signCookie $(BIN)/verifyCookie
+all : dirs $(BIN)/cookieDaemon $(BIN)/signCookie $(BIN)/verifyCookie
+
+dirs :
+	mkdir -p $(BIN)
+	mkdir -p $(OBJ)
 
 $(BIN)/cookieDaemon : $(OBJ)/IGSPnet_Cookie_Streamer.o $(OBJ)/OCCI_IGSPnet.o $(OBJ)/RSA_Sign_Verify.o $(SRC)/cookieDaemon.cpp $(SRC)/IGSPnet_Cookie_Config.h
 	g++ -O3 -I $(ORACLE_HOME)/sdk/include -L $(ORACLE_HOME) $(LIBSTDC) -locci -lclntsh -lcrypto -lnnz11 $(OBJ)/IGSPnet_Cookie_Streamer.o $(OBJ)/OCCI_IGSPnet.o $(OBJ)/RSA_Sign_Verify.o $(SRC)/cookieDaemon.cpp -o $(BIN)/cookieDaemon
