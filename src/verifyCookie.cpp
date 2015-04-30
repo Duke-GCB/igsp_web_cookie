@@ -8,6 +8,7 @@
 #include "RSA_Sign_Verify.h"
 #include "IGSPnet_Cookie_Streamer.h"
 #include "CookieDaemonConfig.h"
+#include <time.h>
 
 void printUsage(char * programName)
 {
@@ -15,6 +16,18 @@ void printUsage(char * programName)
    fprintf(stderr, "where: signedCookie = IGSPnet cookie, digitally signed, as produced by signCookie\n");
    fprintf(stderr, "       IP           = optional IP address of client (www.xxx.yyy.zzz)\n");
    exit(FATAL_EXIT);
+}
+
+void printtime() {
+    time_t timer;
+    char buffer[26];
+    struct tm* tm_info;
+
+    time(&timer);
+    tm_info = localtime(&timer);
+
+    strftime(buffer, 26, "%Y:%m:%d %H:%M:%S ", tm_info);
+    fprintf(stderr, buffer);
 }
 
 int main(int argc, char * argv[])
@@ -81,12 +94,18 @@ int main(int argc, char * argv[])
    struct sockaddr_un sa;
    char buffer[RSA_Sign_Verify::SOCKET_RW_BUFFER_SIZE];
    int count;
+
+   printtime();
+   fprintf(stderr, "Creating socket\n");
    
    if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
    {
       fprintf(stderr, "socket(): could not open socket\n");
       exit(FATAL_EXIT);
    }
+
+   printtime();
+   fprintf(stderr, "Reading config\n");
 
    sa.sun_family = AF_UNIX;
    CookieDaemonConfig *config = CookieDaemonConfig::getConfig();
@@ -97,11 +116,17 @@ int main(int argc, char * argv[])
    strcpy(sa.sun_path, config->getSocketPath().c_str());
    delete(config);
 
+   printtime();
+   fprintf(stderr, "Connecting to socket\n");
+
    if (connect(s, (struct sockaddr *) &sa, sizeof (sa)) < 0)
    {
       fprintf(stderr, "connect(): could not connect to socket %s\n", sa.sun_path);
       exit(FATAL_EXIT);
    }
+
+   printtime();
+   fprintf(stderr, "Sending cookieText\n");
 
    if (send(s, cookieText, strlen(cookieText), 0) < 0)
    {
@@ -109,6 +134,9 @@ int main(int argc, char * argv[])
       exit(FATAL_EXIT);
    }
    
+   printtime();
+   fprintf(stderr, "Receiving signature\n");
+
    count = recv(s, buffer, RSA_Sign_Verify::SOCKET_RW_BUFFER_SIZE - 1, 0);
    if (count > 0)
       buffer[count] = '\0';
