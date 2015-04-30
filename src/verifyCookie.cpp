@@ -22,7 +22,7 @@ int main(int argc, char * argv[])
    char myIP[16];
    myIP[0] = '\0';
 
-   if (argc != 3)
+   if (argc != 2 && argc != 3) // argv[2] is optional IP address
       printUsage(argv[0]);
 
    if (argc == 3)
