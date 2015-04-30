@@ -8,7 +8,7 @@ SRC=src
 BIN=bin
 OBJ=obj
 
-all : dirs $(BIN)/cookieDaemon $(BIN)/signCookie $(BIN)/verifyCookie
+all : dirs $(BIN)/cookieDaemon $(BIN)/signCookie $(BIN)/verifyCookie $(BIN)/readconf
 
 dirs :
 	mkdir -p $(BIN)
@@ -31,6 +31,12 @@ $(OBJ)/RSA_Sign_Verify.o : $(SRC)/RSA_Sign_Verify.cpp $(SRC)/RSA_Sign_Verify.h
 
 $(OBJ)/OCCI_IGSPnet.o : $(SRC)/OCCI_IGSPnet.cpp $(SRC)/OCCI_IGSPnet.h $(SRC)/IGSPnet_Cookie_Config.h
 	g++ -c -O3 -I $(ORACLE_HOME)/sdk/include $(SRC)/OCCI_IGSPnet.cpp -o $(OBJ)/OCCI_IGSPnet.o
+
+$(BIN)/readconf: $(OBJ)/CookieDaemonConfig.o
+	g++ $(SRC)/readconf.cpp $(OBJ)/CookieDaemonConfig.o -o $(BIN)/readconf
+
+$(OBJ)/CookieDaemonConfig.o:
+	g++ -c $(SRC)/CookieDaemonConfig.cpp -o $(OBJ)/CookieDaemonConfig.o
 
 clean :
 	-rm $(BIN)/* $(OBJ)/*
