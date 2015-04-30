@@ -22,7 +22,9 @@ CookieDaemonConfig * CookieDaemonConfig::getConfig() {
   CookieDaemonConfig *config = new CookieDaemonConfig(path);
   return config;
 }
-
+/* Populate values from a named file. File is interpreted as
+ * space-separated keys and values, one per line.
+ */
 void CookieDaemonConfig::readFile(std::string filename) {
   std::ifstream infile(filename.c_str());
   std::string line;
@@ -34,6 +36,7 @@ void CookieDaemonConfig::readFile(std::string filename) {
   }
 }
 
+/* Populate member variables by key */
 void CookieDaemonConfig::setValue(std::string key, std::string value) {
   if(key.compare("SOCKET_PATH") == 0) {
     socket_path = value;
@@ -46,6 +49,9 @@ void CookieDaemonConfig::setValue(std::string key, std::string value) {
   }
 }
 
+/* Helper method for printing a CookieDaemonConfig.
+ * For true C++, should override operator<<
+*/
 void CookieDaemonConfig::print() {
   printf("Socket path: %s\n", socket_path.c_str());
   printf("Connection string: %s\n", db_conn_string.c_str());

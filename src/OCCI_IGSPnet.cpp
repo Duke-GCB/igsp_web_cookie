@@ -15,6 +15,7 @@ OCCI_IGSPnet::OCCI_IGSPnet()
 {
    // creates default OCCI environment (http://download.oracle.com/docs/cd/B12037_01/appdev.101/b10778/toc.htm)
    env = Environment::createEnvironment(Environment::DEFAULT);
+   // Instantiate an object with database connection parameters
    config = CookieDaemonConfig::getConfig();
    //set up the connection; fatally die if cannot
    getConnection(true);
@@ -34,6 +35,7 @@ OCCI_IGSPnet::OCCI_IGSPnet()
 OCCI_IGSPnet::~OCCI_IGSPnet()
 {
    cleanupConnection();
+   // Free up the config object
    delete(config);
    config = NULL;
    // free memory allocated by OCCI environment

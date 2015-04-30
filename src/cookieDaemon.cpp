@@ -17,7 +17,9 @@
  * so must be global */
 int l; //listener socket handle
 OCCI_IGSPnet *db = NULL;  //db handler must be freed on exit
-CookieDaemonConfig *config = NULL;
+CookieDaemonConfig *config = NULL; // Shared configuration object. Global to parallel *db
+
+/* Convenience function to get the socket path from config */
 const char * socket_path() {
   if(config == NULL) {
     config = CookieDaemonConfig::getConfig();
