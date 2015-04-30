@@ -1,5 +1,6 @@
 #include "OCCI_IGSPnet.h"
-
+#include <stdio.h>
+#include <stdexcept>
 /*
  * Method Name: OCCI_IGSPnet
  *
@@ -15,8 +16,11 @@ OCCI_IGSPnet::OCCI_IGSPnet()
 {
    // creates default OCCI environment (http://download.oracle.com/docs/cd/B12037_01/appdev.101/b10778/toc.htm)
    env = Environment::createEnvironment(Environment::DEFAULT);
-   // Instantiate an object with database connection parameters
+   // Instantiate an object with database connection parameters. Die fatally if null
    config = CookieDaemonConfig::getConfig();
+   if(config == NULL) {
+      throw std::runtime_error("No config found");
+   }
    //set up the connection; fatally die if cannot
    getConnection(true);
 }
@@ -206,10 +210,6 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
    
    try
    {
-      // get configuration
-      CookieDaemonConfig *config = CookieDaemonConfig::getConfig();
-
-      // TODO: fail if empty
       // connects to DB
       conn = env->createConnection(config->getDBUser(), config->getDBPass(), config->getConnectionString());
       delete(config);

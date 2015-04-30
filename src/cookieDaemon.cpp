@@ -12,6 +12,7 @@
 /* cookie format = userID::dukey::IP::cookieVersion::clientID:::sig */
 
 #include "cookieDaemon.h"
+#include <stdexcept>
 
 /* listener socket must be close-able by signal handler,
  * so must be global */
@@ -23,6 +24,13 @@ CookieDaemonConfig *config = NULL; // Shared configuration object. Global to par
 const char * socket_path() {
   if(config == NULL) {
     config = CookieDaemonConfig::getConfig();
+    if(config == NULL) {
+      // No valid config, exit now. This will be encountered before
+      // anything that would need cleanup(), so we don't call cleanup()
+      // And doing so would recurse infinitely.
+      fprintf(stderr, "socket_path(): No config found, exiting\n");
+      exit (FATAL_EXIT);
+    }
   }
   
   return config->getSocketPath().c_str();
@@ -120,6 +128,11 @@ int main(int argc, char * argv[])
    {
       fprintf(stderr, "OCCI_IGSPnet(): Can't connect to database - %s\n", e.what());
       return FATAL_EXIT;
+   }
+   catch (std::runtime_error &e)
+   {
+      fprintf(stderr, "OCCI_IGSPnet(): Runtime error - %s\n", e.what());
+      exit(FATAL_EXIT);
    }
 
    while (1)

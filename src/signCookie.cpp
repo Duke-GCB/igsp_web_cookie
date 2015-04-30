@@ -3,6 +3,7 @@
 #include "OCCI_IGSPnet.h"
 #include "IGSPnet_Cookie_Streamer.h"
 #include "CookieDaemonConfig.h"
+#include <stdexcept>
 
 void printUsage(char * programName)
 {
@@ -52,7 +53,11 @@ int main(int argc, char * argv[])
       fprintf(stderr, "OCCI_IGSPnet(): Can't connect to database - %s\n", e.what());
       exit(FATAL_EXIT);
    }
-   
+   catch (std::runtime_error &e)
+   {
+      fprintf(stderr, "OCCI_IGSPnet(): Runtime error - %s\n", e.what());
+      exit(FATAL_EXIT);
+   }
    if (odb->insertCookie(userID, IP, hardLifetime, softLifetime, dukey, cookieVersion, clientID) != 0)
    {
       //user not enabled or lifetime invalid

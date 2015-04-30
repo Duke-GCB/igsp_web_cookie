@@ -90,6 +90,10 @@ int main(int argc, char * argv[])
 
    sa.sun_family = AF_UNIX;
    CookieDaemonConfig *config = CookieDaemonConfig::getConfig();
+   if(config == NULL) {
+      fprintf(stderr, "No config found, exiting\n");
+      exit (FATAL_EXIT);
+   }
    strcpy(sa.sun_path, config->getSocketPath().c_str());
    delete(config);
 

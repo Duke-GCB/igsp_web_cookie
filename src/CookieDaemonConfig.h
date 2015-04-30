@@ -41,6 +41,7 @@ class CookieDaemonConfig {
   private:
     void setValue(std::string key, std::string value);
     void readFile(std::string filename);
+    bool isValid();
     std::string socket_path;
     std::string db_conn_string;
     std::string db_user;

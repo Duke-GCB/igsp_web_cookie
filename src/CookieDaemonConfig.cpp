@@ -15,12 +15,17 @@ CookieDaemonConfig::CookieDaemonConfig(std::string filename) {
   Caller is responsible for deleting the object
 */
 CookieDaemonConfig * CookieDaemonConfig::getConfig() {
-  char * path = getenv(CONFIG_ENV);
+  const char * path = getenv(CONFIG_ENV);
   if(!path) {
-    strcpy(path, DEFAULT_CONFIG_PATH);
+    path = DEFAULT_CONFIG_PATH;
   }
   CookieDaemonConfig *config = new CookieDaemonConfig(path);
-  return config;
+  if(config->isValid()) {
+    return config;
+  } else {
+      fprintf(stderr, "getConfig(): No config read.\nEither set %s with path to valid config or place config in %s\n", CONFIG_ENV, DEFAULT_CONFIG_PATH);
+    return NULL;
+  }
 }
 /* Populate values from a named file. File is interpreted as
  * space-separated keys and values, one per line.
@@ -34,6 +39,14 @@ void CookieDaemonConfig::readFile(std::string filename) {
     if (!(iss >> k >> v)) { break; } // error
     setValue(k,v);
   }
+}
+
+/* Config objects are only valid if they have nonzero values for all members */
+bool CookieDaemonConfig::isValid() {
+  return (socket_path.length() > 0
+    && db_conn_string.length() > 0
+    && db_user.length() > 0
+    && db_pass.length() > 0);
 }
 
 /* Populate member variables by key */
