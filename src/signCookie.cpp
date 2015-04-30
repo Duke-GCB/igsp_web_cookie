@@ -2,7 +2,7 @@
 #include "RSA_Sign_Verify.h"
 #include "OCCI_IGSPnet.h"
 #include "IGSPnet_Cookie_Streamer.h"
-#include "IGSPnet_Cookie_Config.h"
+#include "CookieDaemonConfig.h"
 
 void printUsage(char * programName)
 {
@@ -19,20 +19,7 @@ int main(int argc, char * argv[])
 {
    if (argc != 5)
    {
-     if (argc == 2)
-     {
-       char firstArg[4];
-       strcpy(firstArg, argv[1]);
-       if (strcmp(firstArg, "-svn") == 0)
-       {
-         printf("%s\n",SVNPOS);
-         exit (NORMAL_EXIT);
-       }
-     }
-     else
-     {
-       printUsage(argv[0]);
-     }
+     printUsage(argv[0]);
    }
 
    char userID[13];

@@ -3,7 +3,7 @@
 
 #include <occi.h>
 #include <string.h>
-#include "IGSPnet_Cookie_Config.h"
+#include "CookieDaemonConfig.h"
 
 using namespace oracle::occi;
 
@@ -48,6 +48,7 @@ class OCCI_IGSPnet
       Statement * stmtCheckCookie;
       Statement * stmtInsertCookie;
       Statement * stmtPing;
+      CookieDaemonConfig *config;
       void cleanupConnection();
       int getConnection(bool throwExceptions = false);
 };

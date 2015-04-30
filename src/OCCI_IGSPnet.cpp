@@ -15,7 +15,7 @@ OCCI_IGSPnet::OCCI_IGSPnet()
 {
    // creates default OCCI environment (http://download.oracle.com/docs/cd/B12037_01/appdev.101/b10778/toc.htm)
    env = Environment::createEnvironment(Environment::DEFAULT);
-
+   config = CookieDaemonConfig::getConfig();
    //set up the connection; fatally die if cannot
    getConnection(true);
 }
@@ -34,7 +34,8 @@ OCCI_IGSPnet::OCCI_IGSPnet()
 OCCI_IGSPnet::~OCCI_IGSPnet()
 {
    cleanupConnection();
-         
+   delete(config);
+   config = NULL;
    // free memory allocated by OCCI environment
    if (env != NULL)
       Environment::terminateEnvironment(env);
@@ -203,8 +204,13 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
    
    try
    {
+      // get configuration
+      CookieDaemonConfig *config = CookieDaemonConfig::getConfig();
+
+      // TODO: fail if empty
       // connects to DB
-      conn = env->createConnection(DB_USER, DB_PASS, DB_CONN_STRING);
+      conn = env->createConnection(config->getDBUser(), config->getDBPass(), config->getConnectionString());
+      delete(config);
    
       //prepare the statements
       stmtCheckCookie = conn->createStatement("BEGIN IGSPNET2.CHECK_COOKIE(:1, :2, :3, :4, :5); END;");

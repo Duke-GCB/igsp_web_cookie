@@ -7,7 +7,7 @@
 #include <sys/un.h>
 #include "RSA_Sign_Verify.h"
 #include "IGSPnet_Cookie_Streamer.h"
-#include "IGSPnet_Cookie_Config.h"
+#include "CookieDaemonConfig.h"
 
 void printUsage(char * programName)
 {
@@ -22,19 +22,8 @@ int main(int argc, char * argv[])
    char myIP[16];
    myIP[0] = '\0';
 
-   if ((argc != 2) && (argc != 3))
+   if (argc != 3)
       printUsage(argv[0]);
-
-   if (strlen(argv[1]) == 4)
-   {
-     char firstArg[4];
-     strcpy(firstArg, argv[1]);
-     if (strcmp(firstArg, "-svn") == 0)
-     {
-       printf("%s\n",SVNPOS);
-       exit(NORMAL_EXIT);
-     }
-   }
 
    if (argc == 3)
    {
@@ -100,11 +89,13 @@ int main(int argc, char * argv[])
    }
 
    sa.sun_family = AF_UNIX;
-   strcpy(sa.sun_path, SOCKET_PATH);
+   CookieDaemonConfig *config = CookieDaemonConfig::getConfig();
+   strcpy(sa.sun_path, config->getSocketPath().c_str());
+   delete(config);
 
    if (connect(s, (struct sockaddr *) &sa, sizeof (sa)) < 0)
    {
-      fprintf(stderr, "connect(): could not connect to socket %s\n", SOCKET_PATH);
+      fprintf(stderr, "connect(): could not connect to socket %s\n", sa.sun_path);
       exit(FATAL_EXIT);
    }
 

@@ -24,7 +24,7 @@
 #include "OCCI_IGSPnet.h"
 #include "RSA_Sign_Verify.h"
 #include "IGSPnet_Cookie_Streamer.h"
-#include "IGSPnet_Cookie_Config.h"
+#include "CookieDaemonConfig.h"
 
 /*
  * Function Name: cleanup

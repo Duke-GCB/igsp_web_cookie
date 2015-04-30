@@ -16,11 +16,23 @@ DB_PASS password
 #ifndef COOKIE_DAEMON_CONFIG_H
 #define COOKIE_DAEMON_CONFIG_H
 
+// Exit codes
+#define NORMAL_EXIT 0
+#define FATAL_EXIT 1
+#define USER_EXIT 2
+
+// Environment variable to read for config file location
+#define CONFIG_ENV "COOKIE_DAEMON_CONFIG"
+
+// Default path to use if environment variable not set
+#define DEFAULT_CONFIG_PATH "/var/system/cookied/cookied.conf"
+
 #include <iostream>
 
 class CookieDaemonConfig {
   public:
     CookieDaemonConfig(std::string filename);
+    static CookieDaemonConfig * getConfig();
     void print();
     std::string getSocketPath() { return socket_path; }
     std::string getConnectionString() { return db_conn_string; }

@@ -2,9 +2,25 @@
 #include <fstream>
 #include <sstream>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 CookieDaemonConfig::CookieDaemonConfig(std::string filename) {
   readFile(filename);
+}
+
+/*
+  Build a CookieDaemonConfig from the file located at COOKIE_DAEMON_CONFIG,
+  or the default path if COOKIE_DAEMON_CONFIG not set in the environment.
+  Caller is responsible for deleting the object
+*/
+CookieDaemonConfig * CookieDaemonConfig::getConfig() {
+  char * path = getenv(CONFIG_ENV);
+  if(!path) {
+    strcpy(path, DEFAULT_CONFIG_PATH);
+  }
+  CookieDaemonConfig *config = new CookieDaemonConfig(path);
+  return config;
 }
 
 void CookieDaemonConfig::readFile(std::string filename) {

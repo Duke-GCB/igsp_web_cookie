@@ -13,11 +13,18 @@
 
 #include "cookieDaemon.h"
 
-
 /* listener socket must be close-able by signal handler,
  * so must be global */
 int l; //listener socket handle
 OCCI_IGSPnet *db = NULL;  //db handler must be freed on exit
+CookieDaemonConfig *config = NULL;
+const char * socket_path() {
+  if(config == NULL) {
+    config = CookieDaemonConfig::getConfig();
+  }
+  
+  return config->getSocketPath().c_str();
+}
 
 /*
  * Function Name: cleanup
@@ -33,13 +40,15 @@ OCCI_IGSPnet *db = NULL;  //db handler must be freed on exit
 void cleanup(int signum)
 {
    close(l);
-   unlink(SOCKET_PATH);
+   unlink(socket_path());
 
    if (db != NULL)
    {
       delete db;
       db = NULL;
    }
+   delete(config);
+   config = NULL;
    
    //if we got here, assume normal termination
    exit (NORMAL_EXIT);
@@ -58,17 +67,6 @@ void cleanup(int signum)
  */
 int main(int argc, char * argv[])
 {
-   if (argc == 2)
-   {
-     char firstArg[4];
-     strcpy(firstArg, argv[1]);
-     if (strcmp(firstArg, "-svn") == 0)
-     {
-       printf("%s\n",SVNPOS);
-       exit (NORMAL_EXIT);
-     }
-   }
-
    int w;   /* listener and worker sockets */
    struct sockaddr_un sa;   /* socket address */
    int count;  /* length of stream read by socket */
@@ -90,13 +88,13 @@ int main(int argc, char * argv[])
    /* initialize sockaddr_in struct */
    bzero(&sa, sizeof (struct sockaddr_un));
    sa.sun_family = AF_UNIX;
-   strcpy(sa.sun_path, SOCKET_PATH);
+   strcpy(sa.sun_path, socket_path());
 
    /* bind listener socket  */
-   unlink(SOCKET_PATH);  /* in case it already exists from prior run */
+   unlink(socket_path());  /* in case it already exists from prior run */
    if (bind(l, (struct sockaddr *) &sa, sizeof (sa)) < 0)
    {
-      fprintf(stderr, "bind(): Cannot bind socket to %s - %s\n", SOCKET_PATH, strerror(errno));
+      fprintf(stderr, "bind(): Cannot bind socket to %s - %s\n", socket_path(), strerror(errno));
       return FATAL_EXIT;
    }
 
@@ -107,7 +105,7 @@ int main(int argc, char * argv[])
       return FATAL_EXIT;
    }
    
-   fprintf(stderr, "Listening on socket (bound to %s)\n", SOCKET_PATH); 
+   fprintf(stderr, "Listening on socket (bound to %s)\n", socket_path()); 
 
    char responseBuffer[RSA_Sign_Verify::SOCKET_RW_BUFFER_SIZE];
    
