@@ -1,6 +1,20 @@
 #include "OCCI_IGSPnet.h"
 #include <stdio.h>
 #include <stdexcept>
+
+void printtime() {
+    time_t timer;
+    char buffer[26];
+    struct tm* tm_info;
+
+    time(&timer);
+    tm_info = localtime(&timer);
+
+    strftime(buffer, 26, "%Y:%m:%d %H:%M:%S ", tm_info);
+    fprintf(stderr, buffer);
+}
+
+
 /*
  * Method Name: OCCI_IGSPnet
  *
@@ -67,6 +81,8 @@ OCCI_IGSPnet::~OCCI_IGSPnet()
 int OCCI_IGSPnet::checkCookie(const char * userID, const char * IP, const char * clientID, const char * cookieVersion)
 {
    int shortLifetime;
+   
+   fprintf(stderr, "Getting connection in checkCookie\n");
    
    if (!getConnection())
       return 0;  //cannot establish connection
@@ -190,7 +206,12 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
    {
       if ((conn != NULL) && (stmtPing != NULL))
       {
+         printtime();
+         fprintf(stderr, "Connection exists in getConnection, executing ping\n");
+
          rs = stmtPing->executeQuery();
+         printtime();
+         fprintf(stderr, "Ping executed\n");
 
          if (rs->next())
          {
@@ -201,15 +222,24 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
    }
    catch (...)
    {
+         printtime();
+         fprintf(stderr, "CAUGHT EXCEPTION BUT DID NOTHING\n");
+   
    }
+   printtime(); 
+   fprintf(stderr, "After ping, rs->next was false or exception thrown\n");
    
    //if we're here, we don't have a valid connection to the db, so
    //let's try to set one up
+   printtime();
+   fprintf(stderr, "Cleaning up connection\n");
    
    cleanupConnection();
    
    try
    {
+     printtime();
+     fprintf(stderr, "Creating connection\n");
       // connects to DB
       conn = env->createConnection(config->getDBUser(), config->getDBPass(), config->getConnectionString());
       delete(config);
@@ -231,6 +261,9 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
    }
    catch (SQLException &e)
    {
+     printtime();
+     fprintf(stderr, "Caught exception %s\n", e.what());
+   
       /* Plausible exceptions = ORA-01034, 12541, 03113 */
       if (throwExceptions)
       {

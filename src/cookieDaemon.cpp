@@ -36,6 +36,18 @@ const char * socket_path() {
   return config->getSocketPath().c_str();
 }
 
+void printtime() {
+    time_t timer;
+    char buffer[26];
+    struct tm* tm_info;
+
+    time(&timer);
+    tm_info = localtime(&timer);
+
+    strftime(buffer, 26, "%Y:%m:%d %H:%M:%S ", tm_info);
+    fprintf(stderr, buffer);
+}
+
 /*
  * Function Name: cleanup
  *
@@ -145,6 +157,9 @@ int main(int argc, char * argv[])
          close(w);
          continue;
       }
+
+      printtime();
+      fprintf(stderr, "Accepted socket connection %d\n", w);
       
       /* read up to READ_BUFFER_SIZE-1 bytes - if more, close the socket */
       count = read(w, buffer, RSA_Sign_Verify::SOCKET_RW_BUFFER_SIZE - 1);
@@ -164,6 +179,9 @@ int main(int argc, char * argv[])
       }
       else /* all is well */
       { 
+         printtime();
+         fprintf(stderr, "Received cookie from socket\n", w);
+      
          buffer[count] = '\0'; /* buffer now has the cookie text */
 
          /* userID::dukey::IP::cookieVersion::clientID */
@@ -184,10 +202,16 @@ int main(int argc, char * argv[])
             strcpy(responseBuffer, "0");  //failed response
             failure = 1;
          }
+         
          int shortLifetime;
          if (!failure)
          {
+            printtime();
+            fprintf(stderr, "Parsed cookie from socket, checking cookie\n", w);
+            
             shortLifetime = db->checkCookie(userID, IP, clientID, cookieVersion);
+            printtime();
+            fprintf(stderr, "Checked cookie\n", w);
             //fprintf(stderr, "responseBuffer = %d\n", shortLifetime);
             sprintf(responseBuffer, "%d", shortLifetime);
          }
@@ -200,6 +224,8 @@ int main(int argc, char * argv[])
          {
             fprintf(stderr, "write(): Error writing socket - %s\n", strerror(errno));
          }
+         printtime();
+         fprintf(stderr, "Sent response to socket\n", w);
 
          //* and then close the socket */
       
