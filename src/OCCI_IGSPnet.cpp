@@ -40,12 +40,12 @@ OCCI_IGSPnet::OCCI_IGSPnet()
 OCCI_IGSPnet::~OCCI_IGSPnet()
 {
    cleanupConnection();
-   // Free up the config object
-   delete(config);
-   config = NULL;
    // free memory allocated by OCCI environment
    if (env != NULL)
       Environment::terminateEnvironment(env);
+   // Free up the config object
+   delete(config);
+   config = NULL;
 }
 
 /*
@@ -250,7 +250,6 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
      fprintf(stderr, "getConnection(): Creating connection\n");
       // connects to DB
       conn = env->createConnection(config->getDBUser(), config->getDBPass(), config->getConnectionString());
-      delete(config);
    
      printtime();
      fprintf(stderr, "getConnection(): creating statements\n");

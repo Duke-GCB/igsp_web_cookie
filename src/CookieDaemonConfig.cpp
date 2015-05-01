@@ -32,11 +32,8 @@ CookieDaemonConfig * CookieDaemonConfig::getConfig() {
  */
 void CookieDaemonConfig::readFile(std::string filename) {
   std::ifstream infile(filename.c_str());
-  std::string line;
-  while (std::getline(infile, line)) {
-    std::istringstream iss(line);
-    std::string k, v;
-    if (!(iss >> k >> v)) { break; } // error
+  std::string k, v;
+  while (infile >> k >> v) {
     setValue(k,v);
   }
 }
@@ -52,13 +49,13 @@ bool CookieDaemonConfig::isValid() {
 /* Populate member variables by key */
 void CookieDaemonConfig::setValue(std::string key, std::string value) {
   if(key.compare("SOCKET_PATH") == 0) {
-    socket_path = value;
+    socket_path = std::string(value);
   } else if(key.compare("DB_CONN_STRING") == 0) {
-    db_conn_string = value;
+    db_conn_string = std::string(value);
   } else if(key.compare("DB_USER") == 0) {
-    db_user = value;
+    db_user = std::string(value);
   } else if(key.compare("DB_PASS") == 0) {
-    db_pass = value;
+    db_pass = std::string(value);
   }
 }
 
