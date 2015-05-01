@@ -9,6 +9,13 @@ CookieDaemonConfig::CookieDaemonConfig(std::string filename) {
   readFile(filename);
 }
 
+CookieDaemonConfig::~CookieDaemonConfig() {
+  delete socket_path;
+  delete db_conn_string;
+  delete db_user;
+  delete db_pass;
+}
+
 /*
   Build a CookieDaemonConfig from the file located at COOKIE_DAEMON_CONFIG,
   or the default path if COOKIE_DAEMON_CONFIG not set in the environment.
