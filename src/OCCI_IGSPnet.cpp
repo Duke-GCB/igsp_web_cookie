@@ -142,39 +142,55 @@ void OCCI_IGSPnet::cleanupConnection()
    // free resources tied up by prepared statements
    try
    {
+      printtime();
+      fprintf(stderr, "cleanupConnection(): terminating stmtCheckCookie...\n");
       if ((conn != NULL) && (stmtCheckCookie != NULL))
          conn->terminateStatement(stmtCheckCookie);
    }
    catch (...)
    {
+      printtime();
+      fprintf(stderr, "cleanupConnection(): caught exception terminating stmtCheckCookie\n");
    }
    
    try
    {
+      printtime();
+      fprintf(stderr, "cleanupConnection(): terminating stmtInsertCookie...\n");
       if ((conn != NULL) && (stmtInsertCookie != NULL))
          conn->terminateStatement(stmtInsertCookie);
    }
    catch (...)
    {
+      printtime();
+      fprintf(stderr, "cleanupConnection(): caught exception terminating stmtInsertCookie\n");
    }
 
    try
    {
+      printtime();
+      fprintf(stderr, "cleanupConnection(): terminating stmtPing...\n");
       if ((conn != NULL) && (stmtPing != NULL))
          conn->terminateStatement(stmtPing);
    }
    catch (...)
    {
+      printtime();
+      fprintf(stderr, "cleanupConnection(): caught exception terminating stmtPing\n");
    }
 
    // kill the connection
    try
    {
+      printtime();
+      fprintf(stderr, "cleanupConnection(): terminating conn...\n");
       if ((env != NULL) && (conn != NULL))
          env->terminateConnection(conn);
    }
    catch (...)
    {
+      printtime();
+      fprintf(stderr, "cleanupConnection(): caught exception terminating conn\n");
    }
 
    stmtCheckCookie = NULL;
@@ -194,53 +210,67 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
       if ((conn != NULL) && (stmtPing != NULL))
       {
          printtime();
-         fprintf(stderr, "Connection exists in getConnection, executing ping\n");
+         fprintf(stderr, "getConnection(): Connection exists, executing ping...\n");
 
          rs = stmtPing->executeQuery();
          printtime();
-         fprintf(stderr, "Ping executed\n");
+         fprintf(stderr, "getConnection(): Ping executed\n");
 
          if (rs->next())
          {
+            printtime();
+            fprintf(stderr, "getConnection(): rs->next() was true on test connection, returning with existing connection\n");
             rs->cancel();  //discard the resultset
             return 1;  //the connection is good
+         } else {
+            printtime();
+            fprintf(stderr, "getConnection(): rs->next() was false. Will try to recover...\n");
          }
       }
    }
    catch (...)
    {
          printtime();
-         fprintf(stderr, "CAUGHT EXCEPTION BUT DID NOTHING\n");
+         fprintf(stderr, "getConnection(): CAUGHT EXCEPTION BUT DID NOTHING\n");
    
    }
    printtime(); 
-   fprintf(stderr, "After ping, rs->next was false or exception thrown\n");
+   fprintf(stderr, "getConnection(): After ping try block\n");
    
    //if we're here, we don't have a valid connection to the db, so
    //let's try to set one up
    printtime();
-   fprintf(stderr, "Cleaning up connection\n");
+   fprintf(stderr, "getConnection(): calling cleanupConnection\n");
    
    cleanupConnection();
    
    try
    {
      printtime();
-     fprintf(stderr, "Creating connection\n");
+     fprintf(stderr, "getConnection(): Creating connection\n");
       // connects to DB
       conn = env->createConnection(config->getDBUser(), config->getDBPass(), config->getConnectionString());
       delete(config);
    
+     printtime();
+     fprintf(stderr, "getConnection(): creating statements\n");
       //prepare the statements
       stmtCheckCookie = conn->createStatement("BEGIN IGSPNET2.CHECK_COOKIE(:1, :2, :3, :4, :5); END;");
       stmtInsertCookie = conn->createStatement("BEGIN IGSPNET2.INSERT_COOKIE(:1, :2, :3, :4, :5, :6, :7); END;");
       stmtPing = conn->createStatement("SELECT 1 FROM dual");
       
+     printtime();
+     fprintf(stderr, "getConnection(): executing ping\n");
       rs = stmtPing->executeQuery();
       if (rs->next())
       {
+            printtime();
+            fprintf(stderr, "getConnection(): rs->next() was true on ping, returning with newly created connection\n");
          rs->cancel();  //discard the resultset
          return 1;
+      } else {
+        printtime();
+        fprintf(stderr, "getConnection(): rs->next() was false on ping after creating new connection. This should not happen\n");
       }
       
       //we should not be able to get here, but for completeness, return 0
