@@ -79,7 +79,8 @@ void printtime() {
 
     time(&timer);
     tm_info = localtime(&timer);
-
-    strftime(buffer, 26, "%Y:%m:%d %H:%M:%S ", tm_info);
+    char * processname = getenv("_");
+    strftime(buffer, 26, " %Y:%m:%d %H:%M:%S ", tm_info);
+    fprintf(stderr, processname);
     fprintf(stderr, buffer);
 }
