@@ -32,6 +32,7 @@ DB_PASS password
 class CookieDaemonConfig {
   public:
     CookieDaemonConfig(std::string filename);
+    ~CookieDaemonConfig();
     static CookieDaemonConfig * getConfig();
     void print();
     std::string getSocketPath() { return *socket_path; }
