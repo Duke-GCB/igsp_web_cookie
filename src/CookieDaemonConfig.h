@@ -48,4 +48,6 @@ class CookieDaemonConfig {
     std::string db_pass;
 };
 
+void printtime();
+
 #endif
