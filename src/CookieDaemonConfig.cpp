@@ -9,13 +9,6 @@ CookieDaemonConfig::CookieDaemonConfig(std::string filename) {
   readFile(filename);
 }
 
-CookieDaemonConfig::~CookieDaemonConfig() {
-  delete socket_path;
-  delete db_conn_string;
-  delete db_user;
-  delete db_pass;
-}
-
 /*
   Build a CookieDaemonConfig from the file located at COOKIE_DAEMON_CONFIG,
   or the default path if COOKIE_DAEMON_CONFIG not set in the environment.
@@ -39,33 +32,30 @@ CookieDaemonConfig * CookieDaemonConfig::getConfig() {
  */
 void CookieDaemonConfig::readFile(std::string filename) {
   std::ifstream infile(filename.c_str());
-  std::string line;
-  while (std::getline(infile, line)) {
-    std::istringstream iss(line);
-    std::string k, v;
-    if (!(iss >> k >> v)) { break; } // error
+  std::string k, v;
+  while (infile >> k >> v) {
     setValue(k,v);
   }
 }
 
 /* Config objects are only valid if they have nonzero values for all members */
 bool CookieDaemonConfig::isValid() {
-  return (socket_path->length() > 0
-    && db_conn_string->length() > 0
-    && db_user->length() > 0
-    && db_pass->length() > 0);
+  return (socket_path.length() > 0
+    && db_conn_string.length() > 0
+    && db_user.length() > 0
+    && db_pass.length() > 0);
 }
 
 /* Populate member variables by key */
 void CookieDaemonConfig::setValue(std::string key, std::string value) {
   if(key.compare("SOCKET_PATH") == 0) {
-    socket_path = new std::string(value);
+    socket_path = std::string(value);
   } else if(key.compare("DB_CONN_STRING") == 0) {
-    db_conn_string = new std::string(value);
+    db_conn_string = std::string(value);
   } else if(key.compare("DB_USER") == 0) {
-    db_user = new std::string(value);
+    db_user = std::string(value);
   } else if(key.compare("DB_PASS") == 0) {
-    db_pass = new std::string(value);
+    db_pass = std::string(value);
   }
 }
 
@@ -73,8 +63,8 @@ void CookieDaemonConfig::setValue(std::string key, std::string value) {
  * For true C++, should override operator<<
 */
 void CookieDaemonConfig::print() {
-  printf("Socket path: %s\n", socket_path->c_str());
-  printf("Connection string: %s\n", db_conn_string->c_str());
-  printf("User: %s\n", db_user->c_str());
-  printf("Password: %s\n", db_pass->c_str());
+  printf("Socket path: %s\n", socket_path.c_str());
+  printf("Connection string: %s\n", db_conn_string.c_str());
+  printf("User: %s\n", db_user.c_str());
+  printf("Password: %s\n", db_pass.c_str());
 }

@@ -32,21 +32,20 @@ DB_PASS password
 class CookieDaemonConfig {
   public:
     CookieDaemonConfig(std::string filename);
-    ~CookieDaemonConfig();
     static CookieDaemonConfig * getConfig();
     void print();
-    std::string getSocketPath() { return *socket_path; }
-    std::string getConnectionString() { return *db_conn_string; }
-    std::string getDBUser() { return *db_user; }
-    std::string getDBPass() { return *db_pass; }
+    std::string getSocketPath() { return socket_path; }
+    std::string getConnectionString() { return db_conn_string; }
+    std::string getDBUser() { return db_user; }
+    std::string getDBPass() { return db_pass; }
   private:
     void setValue(std::string key, std::string value);
     void readFile(std::string filename);
     bool isValid();
-    std::string *socket_path;
-    std::string *db_conn_string;
-    std::string *db_user;
-    std::string *db_pass;
+    std::string socket_path;
+    std::string db_conn_string;
+    std::string db_user;
+    std::string db_pass;
 };
 
 #endif
