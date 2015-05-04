@@ -50,6 +50,7 @@ class OCCI_IGSPnet
       Statement * stmtPing;
       CookieDaemonConfig *config;
       void cleanupConnection();
+      bool pingConnection();
       int getConnection(bool throwExceptions = false);
 };
 

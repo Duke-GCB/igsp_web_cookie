@@ -13,7 +13,7 @@
  * Returns    : none
  */
 OCCI_IGSPnet::OCCI_IGSPnet()
-: env(NULL), conn(NULL), stmtCheckCookie(NULL), stmtInsertCookie(NULL), stmtPing(NULL)
+: env(NULL), conn(NULL), stmtCheckCookie(NULL), stmtInsertCookie(NULL)
 {
    // creates default OCCI environment (http://download.oracle.com/docs/cd/B12037_01/appdev.101/b10778/toc.htm)
    env = Environment::createEnvironment(Environment::DEFAULT);
@@ -166,19 +166,6 @@ void OCCI_IGSPnet::cleanupConnection()
       fprintf(stderr, "cleanupConnection(): caught exception terminating stmtInsertCookie\n");
    }
 
-   try
-   {
-      printtime();
-      fprintf(stderr, "cleanupConnection(): terminating stmtPing...\n");
-      if ((conn != NULL) && (stmtPing != NULL))
-         conn->terminateStatement(stmtPing);
-   }
-   catch (...)
-   {
-      printtime();
-      fprintf(stderr, "cleanupConnection(): caught exception terminating stmtPing\n");
-   }
-
    // kill the connection
    try
    {
@@ -195,11 +182,46 @@ void OCCI_IGSPnet::cleanupConnection()
 
    stmtCheckCookie = NULL;
    stmtInsertCookie = NULL;
-   stmtPing = NULL;
    conn = NULL;
 
    return;
 }
+
+bool OCCI_IGSPnet::pingConnection() {
+  bool success = false;
+  if(conn == NULL) {
+    // conn must be valid, return early
+    return success;
+  }
+  Statement *stmtPing = NULL;
+  ResultSet *rs = NULL;
+  try {
+    stmtPing = conn->createStatement("SELECT 1 FROM dual");
+    rs = stmtPing->executeQuery();
+    if (rs->next()) {
+      printtime();
+      fprintf(stderr, "pingConnection(): rs->next() executed successfully, so ping was good\n");
+      success = true;
+    } else {
+      printtime();
+      fprintf(stderr, "pingConnection(): rs->next() was false on ping after creating new connection. This should not happen\n");
+    }
+  } catch (...) {
+    printtime();
+    fprintf(stderr, "pingConnection(): Caught exception pinging\n");
+  }
+  // Cleanup
+  if(stmtPing != NULL) {
+    if(rs != NULL) {
+      stmtPing->closeResultSet(rs);
+      rs = NULL;
+    }
+  conn->terminateStatement(stmtPing);
+  stmtPing = NULL;
+  }
+  return success;
+}
+
 
 int OCCI_IGSPnet::getConnection(bool throwExceptions)
 {
@@ -207,14 +229,19 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
 
    try
    {
-      if ((conn != NULL) && (stmtPing != NULL))
+      if ((conn != NULL) )
       {
          printtime();
          fprintf(stderr, "getConnection(): Connection exists, executing ping...\n");
-
-         rs = stmtPing->executeQuery();
-         printtime();
-         fprintf(stderr, "getConnection(): Ping executed\n");
+         bool pingSucceeded = pingConnection();
+         if (pingSucceeded) {
+            // Ping succeeded, return 1 to indicate connection is OK
+            fprintf(stderr, "getConnection(): pingConnection() was true on existing connection, returning");
+            return 1;
+         } else {
+            // Ping failed, need
+            fprintf(stderr, "getConnection(): rs->next() was false. Will try to recover...\n");
+         }
 
          if (rs->next())
          {
@@ -256,21 +283,17 @@ int OCCI_IGSPnet::getConnection(bool throwExceptions)
       //prepare the statements
       stmtCheckCookie = conn->createStatement("BEGIN IGSPNET2.CHECK_COOKIE(:1, :2, :3, :4, :5); END;");
       stmtInsertCookie = conn->createStatement("BEGIN IGSPNET2.INSERT_COOKIE(:1, :2, :3, :4, :5, :6, :7); END;");
-      stmtPing = conn->createStatement("SELECT 1 FROM dual");
       
      printtime();
-     fprintf(stderr, "getConnection(): executing ping\n");
-      rs = stmtPing->executeQuery();
-      if (rs->next())
-      {
-            printtime();
-            fprintf(stderr, "getConnection(): rs->next() was true on ping, returning with newly created connection\n");
-         rs->cancel();  //discard the resultset
-         return 1;
-      } else {
+     fprintf(stderr, "getConnection(): calling pingConnection()\n");
+     if(pingConnection()) {
         printtime();
-        fprintf(stderr, "getConnection(): rs->next() was false on ping after creating new connection. This should not happen\n");
-      }
+        fprintf(stderr, "getConnection(): pingConnection() was true on newly created connection\n");
+        return 1;
+     } else {
+        printtime();
+        fprintf(stderr, "getConnection(): pingConnection() returned false after creating new connection. This should not happen\n");
+     }
       
       //we should not be able to get here, but for completeness, return 0
       return 0;
