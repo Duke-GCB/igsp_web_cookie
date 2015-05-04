@@ -6,11 +6,17 @@ SRC=src
 BIN=bin
 OBJ=obj
 
-all : libnnz dirs $(BIN)/cookieDaemon $(BIN)/signCookie $(BIN)/verifyCookie $(BIN)/readconf
+all : libstdc libstdc dirs $(BIN)/cookieDaemon $(BIN)/signCookie $(BIN)/verifyCookie $(BIN)/readconf
 
 dirs :
 	mkdir -p $(BIN)
 	mkdir -p $(OBJ)
+
+# Handle differences between instantclient 10 and 11
+libstdc :
+ifeq (10,$(findstring 10,$(ORACLE_HOME)))
+	$(eval LIBSTDC=/usr/lib*/libstdc++.so.5)
+endif
 
 # instantclient 11 uses libnnz11.so, and 10 uses libnnz10.so, so determine which library to link
 libnnz :
