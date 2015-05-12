@@ -46,14 +46,24 @@ __TODO__
 
 ## Configuration
 
+Generate a private key and certificate (public key) in PEM format, using [OpenSSL](https://www.openssl.org). `signCookie` will use the private key to digitally sign the cookie, and `verifyCookie` will the public key to verify the signature.
+
+    # Generate a 4096-bit private key in key.pem
+    openssl genrsa -out key.pem 4096
+
+    # Generate a certificate/public key from the private key in cert.pem, valid for 10 years
+    openssl req -new -x509 -key key.pem -out cert.pem -days 3650
+
 Write a Config file, using [cookied-example.conf](cookied-template.conf) as a template.
 
 - `SOCKET_PATH`: `verifyCookie` talks to `cookieDaemon` over a socket. Specify the path to the socket on the filesystem to use here. `cookieDaemon` will make and remove this socket, so the directory must exist and must be writable to the user that runs `cookieDaemon`
-- `DB_CONN_STRING`: The Oracle connection string for OCCI.
+- `DB_CONN_STRING`: The Oracle connection string for OCCI
 - `DB_USER`: The Oracle account username to connect as
 - `DB_PASS`: The password for the above account
+- `PRIVATE_KEY_PATH`: The path to the PEM-formatted private key
+- `CERT_PATH`: The path to the PEM-formatted certificate
 
-Remember, this file contains database credentials, so protect it on your host.
+Remember, this file contains database credentials, so protect it on your host. Also be sure to protect the private key file
 
 ## Running
 
