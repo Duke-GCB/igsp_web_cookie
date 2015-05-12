@@ -15,7 +15,7 @@ This repository includes a trio of command-line tools that create and verify [co
 
 - Oracle Instant Client & SDK (or full client if installing on oracle server
   - Tested with instantclient 10 and 11.
-  - Make sure `ORACLE_HOME` is set to this directory
+  - Make sure `ORACLE_HOME` is set to the directory where the instantclient or full client is installed.
 
             export ORACLE_HOME=/usr/local/instantclient_11_2
 
@@ -54,7 +54,7 @@ Generate a private key and certificate (public key) in PEM format, using [OpenSS
     # Generate a certificate/public key from the private key in cert.pem, valid for 10 years
     openssl req -new -x509 -key key.pem -out cert.pem -days 3650
 
-Write a Config file, using [cookied-example.conf](cookied-template.conf) as a template.
+Write a Config file, using [cookied-example.conf](cookied-example.conf) as a template.
 
 - `SOCKET_PATH`: `verifyCookie` talks to `cookieDaemon` over a socket. Specify the path to the socket on the filesystem to use here. `cookieDaemon` will make and remove this socket, so the directory must exist and must be writable to the user that runs `cookieDaemon`
 - `DB_CONN_STRING`: The Oracle connection string for OCCI
