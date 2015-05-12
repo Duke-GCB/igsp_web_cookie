@@ -43,7 +43,9 @@ bool CookieDaemonConfig::isValid() {
   return (socket_path.length() > 0
     && db_conn_string.length() > 0
     && db_user.length() > 0
-    && db_pass.length() > 0);
+    && db_pass.length() > 0
+    && private_key_path.length() > 0
+    && cert_path.length() > 0);
 }
 
 /* Populate member variables by key */
@@ -56,6 +58,10 @@ void CookieDaemonConfig::setValue(std::string key, std::string value) {
     db_user = std::string(value);
   } else if(key.compare("DB_PASS") == 0) {
     db_pass = std::string(value);
+  } else if(key.compare("PRIVATE_KEY_PATH") == 0) {
+    private_key_path = std::string(value);
+  } else if(key.compare("CERT_PATH") == 0) {
+    cert_path = std::string(value);
   }
 }
 
@@ -67,6 +73,8 @@ void CookieDaemonConfig::print() {
   printf("Connection string: %s\n", db_conn_string.c_str());
   printf("User: %s\n", db_user.c_str());
   printf("Password: %s\n", db_pass.c_str());
+  printf("Private Key Path: %s\n", private_key_path.c_str());
+  printf("Certificate Path: %s\n", cert_path.c_str());
 }
 
 void printtime() {
@@ -81,3 +89,10 @@ void printtime() {
     fprintf(stderr, processname);
     fprintf(stderr, buffer);
 }
+/* Accessors */
+std::string CookieDaemonConfig::getSocketPath() { return socket_path; }
+std::string CookieDaemonConfig::getConnectionString() { return db_conn_string; }
+std::string CookieDaemonConfig::getDBUser() { return db_user; }
+std::string CookieDaemonConfig::getDBPass() { return db_pass; }
+std::string CookieDaemonConfig::getPrivateKeyPath() { return private_key_path; }
+std::string CookieDaemonConfig::getCertPath() { return cert_path; }
