@@ -5,7 +5,7 @@
 SRC=src
 BIN=bin
 OBJ=obj
-INSTALL_DIR=/var/system/cookied/
+prefix=/var/system/cookied/
 
 all : libstdc libstdc dirs $(BIN)/cookieDaemon $(BIN)/signCookie $(BIN)/verifyCookie $(BIN)/readconf
 
@@ -54,5 +54,7 @@ clean:
 	-rm $(BIN)/* $(OBJ)/*
 
 install: all
-	mkdir -p $(INSTALL_DIR)
-	cp $(BIN)/* $(INSTALL_DIR)
+	mkdir -p $(prefix)
+	install -m 0755 $(BIN)/* $(prefix)
+
+.PHONY: install
