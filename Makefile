@@ -53,7 +53,7 @@ $(OBJ)/CookieDaemonConfig.o:
 clean:
 	-rm $(BIN)/* $(OBJ)/*
 
-install: all
+install:
 	mkdir -p $(prefix)
 	install -m 0755 $(BIN)/* $(prefix)
 
