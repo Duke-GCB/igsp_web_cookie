@@ -5,6 +5,7 @@
 SRC=src
 BIN=bin
 OBJ=obj
+INSTALL_DIR=/var/system/cookied/
 
 all : libstdc libstdc dirs $(BIN)/cookieDaemon $(BIN)/signCookie $(BIN)/verifyCookie $(BIN)/readconf
 
@@ -49,5 +50,9 @@ $(BIN)/readconf: $(OBJ)/CookieDaemonConfig.o
 $(OBJ)/CookieDaemonConfig.o:
 	g++ -c $(SRC)/CookieDaemonConfig.cpp -o $(OBJ)/CookieDaemonConfig.o
 
-clean :
+clean:
 	-rm $(BIN)/* $(OBJ)/*
+
+install: all
+	mkdir -p $(INSTALL_DIR)
+	cp $(BIN)/* $(INSTALL_DIR)
