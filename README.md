@@ -61,7 +61,8 @@ Write a Config file, using [cookied-example.conf](cookied-example.conf) as a tem
 - `PRIVATE_KEY_PATH`: The path to the PEM-formatted private key
 - `CERT_PATH`: The path to the PEM-formatted certificate
 
-Remember, this file contains database credentials, so protect it on your host. Also be sure to protect the private key file
+Remember, this file contains database credentials, so protect it on your host. Also be sure to protect the private key file so that only the user that runs `signCookie` can read it.
+
 ## Installation
 
 1. Make a directory for installation. This should be writable by the user that will run the binaries (possibly apache or oracle)
@@ -83,7 +84,6 @@ Remember, this file contains database credentials, so protect it on your host. A
         sudo service cookied start
 
 6. Confirm installation by signing and verifying a cookie. See [Examples](#examples).
-
 
 ## Running
 
