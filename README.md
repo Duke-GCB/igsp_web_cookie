@@ -13,7 +13,7 @@ This repository includes a trio of command-line tools that create and verify [co
 
 #### From Oracle:
 
-- Oracle Instant Client & SDK (or full client if installing on oracle server
+- Oracle Instant Client & SDK (or full client if installing on oracle server)
   - Tested with instantclient 10 and 11.
   - Make sure `ORACLE_HOME` is set to the directory where the instantclient or full client is installed.
 
@@ -40,11 +40,9 @@ The Makefile will detect if you are using instantclient 10 and use this file, in
 
 A Makefile is provided. Type `make`. Binaries are created in the `bin` directory. Three binaries are built: `cookieDaemon`, `signCookie`, and `verifyCookie`.
 
-## Installation
-
-__TODO__
-
 ## Configuration
+
+__Note__: if you are installing igsp\_web\_cookie to join an existing IGSPNet environment, you must use the same key/certificate and connect to the same database. Cookies generated with one key/cert cannot be verified with another key/cert.
 
 Generate a private key and certificate (public key) in PEM format, using [OpenSSL](https://www.openssl.org). `signCookie` will use the private key to digitally sign the cookie, and `verifyCookie` will the public key to verify the signature.
 
@@ -53,8 +51,6 @@ Generate a private key and certificate (public key) in PEM format, using [OpenSS
 
     # Generate a certificate/public key from the private key in cert.pem, valid for 10 years
     openssl req -new -x509 -key key.pem -out cert.pem -days 3650
-
-__Note:__ All hosts that talk to the same database will need to use the same key and certificate files.
 
 Write a Config file, using [cookied-example.conf](cookied-example.conf) as a template.
 
@@ -65,7 +61,29 @@ Write a Config file, using [cookied-example.conf](cookied-example.conf) as a tem
 - `PRIVATE_KEY_PATH`: The path to the PEM-formatted private key
 - `CERT_PATH`: The path to the PEM-formatted certificate
 
-Remember, this file contains database credentials, so protect it on your host. Also be sure to protect the private key file
+Remember, this file contains database credentials, so protect it on your host. Also be sure to protect the private key file so that only the user that runs `signCookie` can read it.
+
+## Installation
+
+1. Make a directory for installation. This should be writable by the user that will run the binaries (possibly apache or oracle)
+
+        mkdir -p /var/system/cookied
+
+2. cd to the directory where igsp\_web\_cookie was built run make install. This places the binaries in the above directory:
+
+        make install prefix=/var/system/cookied
+
+3. Place config file and keys in the `COOKIE_DAEMON_CONFIG` directory (see [Configuration](#configuration)).
+4. Create an init script for `cookied`. See [cookied.j2](https://github.com/Duke-GCB/gcb-ansible/blob/master/roles/igsp_web_cookie/templates/cookied.j2) as a template. You'll need to fill in values for anything between `{{ }}`, including the above install directory as well as the path to your `cookied.conf` file
+5. Install, enable, and start the `cookied` service (These are chkconfig instructions, adapt to your environment as needed)
+
+        sudo cp cookied /etc/init.d/
+        sudo chmod 0755 /etc/init.d/cookied
+        sudo chkconfig --add cookied
+        sudo chkconfig cookied on
+        sudo service cookied start
+
+6. Confirm installation by signing and verifying a cookie. See [Examples](#examples).
 
 ## Running
 
