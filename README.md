@@ -66,7 +66,7 @@ Remember, this file contains database credentials, so protect it on your host. A
 
 1. Make a directory for installation. This should be writable by the user that will run the binaries (possibly apache or oracle)
 
-        mkdir /var/system/cookied
+        mkdir -p /var/system/cookied
 
 2. cd to the directory where igsp\_web\_cookie was built run make install. This places the binaries in the above directory:
 
