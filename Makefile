@@ -43,8 +43,8 @@ $(OBJ)/IGSPnet_Cookie_Streamer.o : $(SRC)/IGSPnet_Cookie_Streamer.cpp $(SRC)/IGS
 $(OBJ)/RSA_Sign_Verify.o : $(SRC)/RSA_Sign_Verify.cpp $(SRC)/RSA_Sign_Verify.h
 	g++ -c -O3 $(SRC)/RSA_Sign_Verify.cpp -o $(OBJ)/RSA_Sign_Verify.o
 
-$(OBJ)/OCCI_IGSPnet.o : $(SRC)/OCCI_IGSPnet.cpp $(SRC)/OCCI_IGSPnet.h $(OBJ)/CookieDaemonConfig.o
-	g++ -c -O3 -I $(OCCI_INCLUDE) $(SRC)/OCCI_IGSPnet.cpp $(OBJ)/CookieDaemonConfig.o -o $(OBJ)/OCCI_IGSPnet.o
+$(OBJ)/OCCI_IGSPnet.o : $(SRC)/OCCI_IGSPnet.cpp $(SRC)/OCCI_IGSPnet.h
+	g++ -c -O3 -I $(OCCI_INCLUDE) $(SRC)/OCCI_IGSPnet.cpp -o $(OBJ)/OCCI_IGSPnet.o
 
 $(BIN)/readconf: $(OBJ)/CookieDaemonConfig.o
 	g++ $(SRC)/readconf.cpp $(OBJ)/CookieDaemonConfig.o -o $(BIN)/readconf
