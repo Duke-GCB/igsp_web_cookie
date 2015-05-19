@@ -44,6 +44,10 @@ A Makefile is included in the git repo. After cloning, type `make`. Binaries are
     $ cd igsp_web_cookie
     $ make
 
+The Makefile assumes your Oracle client shared libraries are in `$ORACLE_HOME`, and that the header files are in `$ORACLE_HOME/include`. This is typically the case with instantclient, but you can verify by locating `libocci.so` and `occi.h`. If these are not in the default locations, you can override at compile-time:
+
+    $ make OCCI_LIB=/path/to/dir/with/libs OCCI_INCLUDE=/path/to/dir/with/headers
+
 ## Configuration
 
 __Note__: if you are installing igsp\_web\_cookie to join an existing IGSPNet environment, you must use the same key/certificate and connect to the same database. Cookies generated with one key/cert cannot be verified with another key/cert.
