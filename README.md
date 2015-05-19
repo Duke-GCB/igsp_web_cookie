@@ -111,12 +111,16 @@ At runtime, all 3 binaries look for the location of the conf file in the environ
 
         [1] 1241
 
-3. Verify a cookie
+3. Verify a cookie (requires cookieDaemon to be running)
 
         $ LD_LIBRARY_PATH=$ORACLE_HOME \
             COOKIE_DAEMON_CONFIG=/var/system/cookied/cookied.conf \
             ./verifyCookie user123::127.0.0.1 7200::1::ABBAB:::32...
 
         7200
+
+4. Kill cookieDaemon (using the PID returned in step 2)
+
+        $ kill 1241
 
 Of course, the environment variables could be exported before running the above commands.
