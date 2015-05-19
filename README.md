@@ -38,7 +38,11 @@ The Makefile will detect if you are using instantclient 10 and use this file, in
 
 #### Compiling
 
-A Makefile is provided. Type `make`. Binaries are created in the `bin` directory. Three binaries are built: `cookieDaemon`, `signCookie`, and `verifyCookie`.
+A Makefile is included in the git repo. After cloning, type `make`. Binaries are created in the `bin` directory. Three binaries are built: `cookieDaemon`, `signCookie`, and `verifyCookie`.
+
+    $ git clone https://github.com/Duke-GCB/igsp_web_cookie.git
+    $ cd igsp_web_cookie
+    $ make
 
 ## Configuration
 
